@@ -1,0 +1,20 @@
+{
+  "dev": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-collectwitch-dev-152741-authRole",
+      "UnauthRoleArn": "arn:aws:iam::217809262647:role/amplify-collectwitch-dev-152741-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::217809262647:role/amplify-collectwitch-dev-152741-authRole",
+      "Region": "eu-west-3",
+      "DeploymentBucketName": "amplify-collectwitch-dev-152741-deployment",
+      "UnauthRoleName": "amplify-collectwitch-dev-152741-unauthRole",
+      "StackName": "amplify-collectwitch-dev-152741",
+      "StackId": "arn:aws:cloudformation:eu-west-3:217809262647:stack/amplify-collectwitch-dev-152741/f003ee10-b9d7-11ed-adb1-06c273ec075e",
+      "AmplifyAppId": "d17ngpd644g9y6"
+    },
+    "categories": {
+      "api": {
+        "collectwitch": {}
+      }
+    }
+  }
+}

@@ -1,0 +1,22 @@
+type User @model @auth(rules: [{ allow: public }]) {
+    id: ID!
+    twitchID: String!
+    prefferedCard: Card @hasOne
+    cards: [Card] @hasMany(indexName: "byUser", fields: ["id"])
+}
+
+type Universe @model @auth(rules: [{ allow: public }]) {
+    id: ID!
+    cards: [Card] @hasMany(indexName: "byUniverse", fields: ["id"])
+    name: String!
+}
+
+type Card @model @auth(rules: [{ allow: public }]) {
+    id: ID!
+    name: String!
+    image: AWSURL
+    color: String!
+    releaseWave: Int!
+    universeID: ID! @index(name: "byUniverse")
+    userID: ID! @index(name: "byUser")
+}
