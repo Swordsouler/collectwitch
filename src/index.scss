@@ -15,3 +15,23 @@ body {
   -ms-user-select: none;
   user-select: none;
 }
+
+.underline {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.underline::after {
+    content: '';
+    position: absolute;
+    display: block;
+    width: 50%;
+    height: 2px;
+    background-color: #fff;
+    transition: width 0.3s;
+    align-self: center;
+    justify-self: center;
+    top: 40px
+}

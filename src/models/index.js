@@ -4,10 +4,11 @@ import { schema } from './schema';
 
 
 
-const { User, Card, Universe } = initSchema(schema);
+const { User, Universe, Card, UserCard } = initSchema(schema);
 
 export {
   User,
+  Universe,
   Card,
-  Universe
+  UserCard
 };

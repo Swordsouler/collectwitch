@@ -4,6 +4,9 @@ import "./App.scss";
 import { AppRoute } from "./AppRoute";
 import { Header, HeaderProps } from "./components/Header";
 
+export const defaultImage =
+    "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d5/No_sign.svg/1200px-No_sign.svg.png";
+
 export const ColorModeContext = createContext({
     toggleColorMode: () => {},
 });
@@ -36,6 +39,9 @@ function App() {
             palette: {
                 primary: {
                     ...customTheme.palette.primary,
+                },
+                secondary: {
+                    ...customTheme.palette.secondary,
                 },
                 mode,
                 background: {},
@@ -70,6 +76,12 @@ const customTheme = createTheme({
             main: "#a76efd",
             light: "#e4d3fe",
             dark: "#883cfc",
+        },
+        secondary: {
+            contrastText: "#FFFFFF",
+            main: "#808080",
+            light: "#b3b3b3",
+            dark: "#676767",
         },
     },
     shape: {

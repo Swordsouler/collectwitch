@@ -2,21 +2,23 @@ type User @model @auth(rules: [{ allow: public }]) {
     id: ID!
     twitchID: String!
     prefferedCard: Card @hasOne
-    cards: [Card] @hasMany(indexName: "byUser", fields: ["id"])
+    cards: [Card] @manyToMany(relationName: "UserCard")
 }
 
 type Universe @model @auth(rules: [{ allow: public }]) {
     id: ID!
     cards: [Card] @hasMany(indexName: "byUniverse", fields: ["id"])
     name: String!
+    icon: AWSURL
 }
 
 type Card @model @auth(rules: [{ allow: public }]) {
     id: ID!
     name: String!
-    image: AWSURL
+    state: String!
+    cover: AWSURL
     color: String!
     releaseWave: Int!
     universeID: ID! @index(name: "byUniverse")
-    userID: ID! @index(name: "byUser")
+    users: [User] @manyToMany(relationName: "UserCard")
 }

@@ -14,6 +14,12 @@
     "categories": {
       "api": {
         "collectwitch": {}
+      },
+      "auth": {
+        "collectwitch": {}
+      },
+      "storage": {
+        "s3collectwitchstorageb9fb10ff": {}
       }
     }
   }
