@@ -11,7 +11,7 @@ import {
     Typography,
     useTheme,
 } from "@mui/material";
-import { DataStore } from "aws-amplify";
+import { DataStore, Predicates, SortDirection } from "aws-amplify";
 import { Card, Rarity, Universe } from "../models";
 import { Storage } from "@aws-amplify/storage";
 import { CardUI } from "../components/CardUI";
@@ -66,7 +66,13 @@ export function CardPage() {
 
     useEffect(() => {
         const fetchCards = async () => {
-            const cards = await DataStore.query(Card);
+            const cards = await DataStore.query(Card, Predicates.ALL, {
+                sort: (c) =>
+                    c
+                        .universeID(SortDirection.ASCENDING)
+                        .name(SortDirection.ASCENDING)
+                        .state(SortDirection.ASCENDING),
+            });
             setCards(cards);
         };
         fetchCards();

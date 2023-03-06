@@ -12,7 +12,7 @@ import {
 import { useEffect, useRef, useState } from "react";
 import { Universe } from "../models";
 import AddRoundedIcon from "@mui/icons-material/AddRounded";
-import { DataStore } from "aws-amplify";
+import { DataStore, Predicates, SortDirection } from "aws-amplify";
 import { getCroppedImage, ImageInput } from "../components/ImageInput";
 import { Storage } from "@aws-amplify/storage";
 import { Crop } from "react-image-crop";
@@ -28,7 +28,9 @@ export function UniversePage() {
 
     useEffect(() => {
         const fetchUniverses = async () => {
-            const universes = await DataStore.query(Universe);
+            const universes = await DataStore.query(Universe, Predicates.ALL, {
+                sort: (c) => c.createdAt(SortDirection.ASCENDING),
+            });
             setUniverses(universes);
         };
         fetchUniverses();
