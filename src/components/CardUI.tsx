@@ -66,6 +66,8 @@ export function CardUI(props: {
                 const blob = new Blob([byteArray], { type: "image/gif" });
                 var imageUrl = URL.createObjectURL(blob);
                 setCover(imageUrl);
+            } else {
+                setCover("");
             }
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
