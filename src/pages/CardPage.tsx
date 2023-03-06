@@ -28,7 +28,6 @@ export function CardPage() {
     const [cards, setCards] = useState<Card[]>([]);
     const [color1, setColor1] = useState<string>("#FF00FF");
     const [color2, setColor2] = useState<string>("#00FFFF");
-    const cardName = useRef<string>();
     const cardRef = useRef<Card | undefined>();
     const cardData = useRef<{
         name?: string;

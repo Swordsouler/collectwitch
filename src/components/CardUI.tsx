@@ -68,9 +68,10 @@ export function CardUI(props: {
                 setCover(imageUrl);
             }
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    if (universeIcon == undefined || cover == undefined) {
+    if (universeIcon === undefined || cover === undefined) {
         return (
             <div
                 style={{
@@ -96,7 +97,6 @@ export function CardUI(props: {
     url = url + "&name=" + encodeURIComponent(name ?? "Nom");
     url = url + "&state=" + encodeURIComponent(state ?? "Normal");
     url = url + "&amount=" + encodeURIComponent(amount ?? "0");
-    url = url;
 
     return (
         <iframe
