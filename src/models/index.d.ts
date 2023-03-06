@@ -2,7 +2,13 @@ import { ModelInit, MutableModel, __modelMeta__, ManagedIdentifier } from "@aws-
 // @ts-ignore
 import { LazyLoading, LazyLoadingDisabled, AsyncItem, AsyncCollection } from "@aws-amplify/datastore";
 
-
+export enum Rarity {
+  COMMON = "COMMON",
+  RARE = "RARE",
+  EPIC = "EPIC",
+  LEGENDARY = "LEGENDARY",
+  EXCLUSIVE = "EXCLUSIVE"
+}
 
 
 
@@ -79,11 +85,15 @@ type EagerCard = {
   };
   readonly id: string;
   readonly name: string;
+  readonly state: string;
   readonly cover?: string | null;
-  readonly color: string;
+  readonly color1?: string | null;
+  readonly color2?: string | null;
+  readonly rarity?: Rarity | keyof typeof Rarity | null;
   readonly releaseWave: number;
-  readonly universeID: string;
+  readonly available: boolean;
   readonly users?: (UserCard | null)[] | null;
+  readonly universeID: string;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
 }
@@ -95,11 +105,15 @@ type LazyCard = {
   };
   readonly id: string;
   readonly name: string;
+  readonly state: string;
   readonly cover?: string | null;
-  readonly color: string;
+  readonly color1?: string | null;
+  readonly color2?: string | null;
+  readonly rarity?: Rarity | keyof typeof Rarity | null;
   readonly releaseWave: number;
-  readonly universeID: string;
+  readonly available: boolean;
   readonly users: AsyncCollection<UserCard>;
+  readonly universeID: string;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
 }

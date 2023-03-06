@@ -43,10 +43,12 @@ export function UniversePage() {
         const croppedImage = document.getElementById(
             "universe-image-cropped"
         ) as HTMLImageElement;
-        if (!universeImage.current) return;
-        const image = !croppedImage.src.startsWith("https://")
-            ? getCroppedImage(croppedImage, universeImage.current.crop)
-            : undefined;
+        const image =
+            croppedImage &&
+            !croppedImage.src.startsWith("https://") &&
+            universeImage.current
+                ? getCroppedImage(croppedImage, universeImage.current.crop)
+                : undefined;
 
         let universe: Universe;
         if (universeRef.current) {
@@ -186,10 +188,9 @@ function UniverseCard(props: {
     function deleteUniverse() {
         //remove icon from s3
         if (icon) {
-            const key = icon.replace(
-                process.env.REACT_APP_S3_URL + "public/",
-                ""
-            );
+            const key = icon
+                .replace(process.env.REACT_APP_S3_URL + "public/", "")
+                .split("?")[0];
             Storage.remove(key);
         }
         DataStore.delete(Universe, id);

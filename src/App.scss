@@ -75,3 +75,10 @@
     height: 250px;
     object-fit: contain;
 }
+
+.card__container {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}

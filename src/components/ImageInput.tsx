@@ -1,5 +1,5 @@
 import { useTheme } from "@mui/material";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import ReactCrop, { Crop } from "react-image-crop";
 
 export function ImageInput(props: {
@@ -8,11 +8,12 @@ export function ImageInput(props: {
     src?: string;
     label: string;
     onChange: (image: string, crop: Crop) => void;
-    defaultImage?: string;
 }) {
     const { id, aspectRatio, label, onChange } = props;
     const [src, setSrc] = useState<string>(props.src ?? "");
-    const isLocaleImage = props.src !== undefined && props.src === src;
+    const isLocaleImage = useRef<boolean>(
+        props.src !== undefined && props.src === src
+    );
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (!e.target.files) return;
         const file = e.target.files[0];
@@ -22,11 +23,12 @@ export function ImageInput(props: {
             const crop: Crop = {
                 x: 0,
                 y: 0,
-                width: 100,
+                width: 100 * aspectRatio,
                 height: 100,
                 unit: "px",
             };
             onChange(src, crop);
+            isLocaleImage.current = false;
             setSrc(src);
         });
         reader.readAsDataURL(file);
@@ -50,7 +52,7 @@ export function ImageInput(props: {
                 multiple={false}
                 onChange={handleFileChange}
             />
-            {isLocaleImage ? (
+            {isLocaleImage.current ? (
                 <img
                     src={src}
                     id={id + "-cropped"}
@@ -79,7 +81,7 @@ function Cropper(props: {
     const [crop, setCrop] = useState<Crop>({
         x: 0,
         y: 0,
-        width: 100,
+        width: 100 * aspectRatio,
         height: 100,
         unit: "px",
     });
@@ -87,9 +89,11 @@ function Cropper(props: {
     return (
         <ReactCrop
             crop={crop}
+            onDragEnd={(c) => {
+                onChange(src, crop);
+            }}
             onChange={(c) => {
                 setCrop(c);
-                onChange(src, c);
             }}
             aspect={aspectRatio}>
             <img

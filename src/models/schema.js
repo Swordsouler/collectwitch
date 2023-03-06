@@ -199,6 +199,13 @@ export const schema = {
                     "isRequired": true,
                     "attributes": []
                 },
+                "state": {
+                    "name": "state",
+                    "isArray": false,
+                    "type": "String",
+                    "isRequired": true,
+                    "attributes": []
+                },
                 "cover": {
                     "name": "cover",
                     "isArray": false,
@@ -206,11 +213,27 @@ export const schema = {
                     "isRequired": false,
                     "attributes": []
                 },
-                "color": {
-                    "name": "color",
+                "color1": {
+                    "name": "color1",
                     "isArray": false,
                     "type": "String",
-                    "isRequired": true,
+                    "isRequired": false,
+                    "attributes": []
+                },
+                "color2": {
+                    "name": "color2",
+                    "isArray": false,
+                    "type": "String",
+                    "isRequired": false,
+                    "attributes": []
+                },
+                "rarity": {
+                    "name": "rarity",
+                    "isArray": false,
+                    "type": {
+                        "enum": "Rarity"
+                    },
+                    "isRequired": false,
                     "attributes": []
                 },
                 "releaseWave": {
@@ -220,10 +243,10 @@ export const schema = {
                     "isRequired": true,
                     "attributes": []
                 },
-                "universeID": {
-                    "name": "universeID",
+                "available": {
+                    "name": "available",
                     "isArray": false,
-                    "type": "ID",
+                    "type": "Boolean",
                     "isRequired": true,
                     "attributes": []
                 },
@@ -242,6 +265,13 @@ export const schema = {
                             "card"
                         ]
                     }
+                },
+                "universeID": {
+                    "name": "universeID",
+                    "isArray": false,
+                    "type": "ID",
+                    "isRequired": true,
+                    "attributes": []
                 },
                 "createdAt": {
                     "name": "createdAt",
@@ -393,8 +423,19 @@ export const schema = {
             ]
         }
     },
-    "enums": {},
+    "enums": {
+        "Rarity": {
+            "name": "Rarity",
+            "values": [
+                "COMMON",
+                "RARE",
+                "EPIC",
+                "LEGENDARY",
+                "EXCLUSIVE"
+            ]
+        }
+    },
     "nonModels": {},
     "codegenVersion": "3.3.6",
-    "version": "69e582b81018507a96a003e10197c14d"
+    "version": "2c44aa995db376a5c71269f46e136f1c"
 };

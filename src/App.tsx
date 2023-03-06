@@ -11,7 +11,6 @@ export const ColorModeContext = createContext({
     toggleColorMode: () => {},
 });
 
-console.log(process.env.REACT_APP_S3_URL);
 function App() {
     const prefersDarkMode = useMediaQuery("(prefers-color-scheme: dark)");
 

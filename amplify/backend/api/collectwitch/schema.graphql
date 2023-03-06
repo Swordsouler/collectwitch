@@ -17,8 +17,19 @@ type Card @model @auth(rules: [{ allow: public }]) {
     name: String!
     state: String!
     cover: AWSURL
-    color: String!
+    color1: String
+    color2: String
+    rarity: Rarity
     releaseWave: Int!
-    universeID: ID! @index(name: "byUniverse")
+    available: Boolean!
     users: [User] @manyToMany(relationName: "UserCard")
+    universeID: ID! @index(name: "byUniverse")
+}
+
+enum Rarity {
+    COMMON
+    RARE
+    EPIC
+    LEGENDARY
+    EXCLUSIVE
 }
