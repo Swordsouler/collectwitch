@@ -262,6 +262,7 @@ export function CardPage() {
                             backgroundColor: theme.palette.background.default,
                             borderRadius: theme.shape.borderRadius,
                             padding: theme.shape.borderRadius,
+                            paddingRight: 0,
                         }}>
                         <Typography
                             variant='h6'
@@ -269,7 +270,12 @@ export function CardPage() {
                             color={"text.primary"}>
                             Création d'une carte
                         </Typography>
-                        <form onSubmit={handleSubmit}>
+                        <form
+                            onSubmit={handleSubmit}
+                            className='card__form'
+                            style={{
+                                padding: theme.shape.borderRadius,
+                            }}>
                             <div className='form__content'>
                                 <TextField
                                     id='card-name'

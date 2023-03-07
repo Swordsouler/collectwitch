@@ -17,6 +17,7 @@ export function ImageInput(props: {
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (!e.target.files) return;
         const file = e.target.files[0];
+        if (!file) return;
         const reader = new FileReader();
         reader.addEventListener("load", () => {
             const src = reader.result as string;
