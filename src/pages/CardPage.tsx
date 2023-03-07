@@ -1,12 +1,15 @@
 import {
     Button,
     CardActions,
+    Divider,
     FormControl,
     InputLabel,
     MenuItem,
     Modal,
+    Paper,
     Select,
     SelectChangeEvent,
+    TablePagination,
     TextField,
     Typography,
     useTheme,
@@ -25,10 +28,14 @@ import { MuiColorInput } from "mui-color-input";
 export function CardPage() {
     const theme = useTheme();
     const isDark = theme.palette.mode === "dark";
+    const [recentCards, setRecentCards] = useState<Card[]>([]);
     const [cards, setCards] = useState<Card[]>([]);
     const [color1, setColor1] = useState<string>("#FF00FF");
     const [color2, setColor2] = useState<string>("#00FFFF");
+    const [page, setPage] = useState<number>(0);
     const cardRef = useRef<Card | undefined>();
+    const [maxRows, setMaxRows] = useState<number>(1000);
+    const [rowsPerPage, setRowsPerPage] = useState<number>(10);
     const cardData = useRef<{
         name?: string;
         state?: string;
@@ -64,20 +71,51 @@ export function CardPage() {
             | undefined;
     }>();
 
+    const fetchCards = async (newPage?: number, newRowsPerPage?: number) => {
+        newPage = newPage ?? page;
+        newRowsPerPage = newRowsPerPage ?? rowsPerPage;
+        const oldCards = cards;
+        const oldPage = page;
+        setRowsPerPage(newRowsPerPage);
+        setCards([]);
+
+        const newCards = await DataStore.query(Card, Predicates.ALL, {
+            sort: (c) =>
+                c
+                    .universeID(SortDirection.ASCENDING)
+                    .name(SortDirection.ASCENDING)
+                    .state(SortDirection.ASCENDING),
+            limit: newRowsPerPage,
+            page: newPage,
+        });
+
+        if (newCards.length > 0) {
+            setCards(newCards);
+            setPage(newPage);
+            if (newCards.length < newRowsPerPage) {
+                setMaxRows(newRowsPerPage * newPage + newCards.length);
+            }
+        } else {
+            setCards(oldCards);
+            setPage(oldPage);
+            setMaxRows(newRowsPerPage * oldPage + newRowsPerPage);
+        }
+    };
+
+    const fetchRecentCards = async () => {
+        const newRecentCards = await DataStore.query(Card, Predicates.ALL, {
+            sort: (c) => c.createdAt(SortDirection.DESCENDING),
+            limit: 14,
+        });
+        setRecentCards(newRecentCards);
+    };
+
     useEffect(() => {
-        const fetchCards = async () => {
-            const cards = await DataStore.query(Card, Predicates.ALL, {
-                sort: (c) =>
-                    c
-                        .universeID(SortDirection.ASCENDING)
-                        .name(SortDirection.ASCENDING)
-                        .state(SortDirection.ASCENDING),
-            });
-            setCards(cards);
-        };
-        fetchCards();
-        const subscription = DataStore.observe(Card).subscribe((msg) => {
-            fetchCards();
+        fetchCards(page, rowsPerPage);
+        fetchRecentCards();
+
+        const subscription = DataStore.observe(Card).subscribe(() => {
+            fetchRecentCards();
         });
         return () => subscription.unsubscribe();
     }, []);
@@ -210,23 +248,58 @@ export function CardPage() {
     };
 
     return (
-        <div className='universe__container'>
-            <MuiCard sx={{ width: 250, height: 410 }}>
-                <Button
-                    style={{ padding: 0, height: "100%" }}
-                    variant={isDark ? "outlined" : "contained"}
-                    onClick={openModal}>
-                    <AddRoundedIcon style={{ height: "100%", width: "100%" }} />
-                </Button>
-            </MuiCard>
-            {cards.map((card) => (
-                <CardCard
-                    card={card}
-                    key={card.id + card.updatedAt}
-                    editCard={editCard}
-                />
-            ))}
+        <div className='card__page'>
+            <TablePagination
+                component={Paper}
+                count={maxRows}
+                color='primary'
+                page={page}
+                onPageChange={(e, value) => {
+                    fetchCards(value, rowsPerPage);
+                }}
+                rowsPerPage={rowsPerPage}
+                onRowsPerPageChange={(event) => {
+                    const newRowsPerPage = parseInt(event.target.value, 10);
+                    fetchCards(0, newRowsPerPage);
+                }}
+            />
+            <div className='card__page__cards'>
+                <MuiCard sx={{ width: 250, height: 410 }}>
+                    <Button
+                        style={{ padding: 0, height: "100%" }}
+                        variant={isDark ? "outlined" : "contained"}
+                        onClick={openModal}>
+                        <AddRoundedIcon
+                            style={{ height: "100%", width: "100%" }}
+                        />
+                    </Button>
+                </MuiCard>
+                {cards.map((card) => (
+                    <CardCard
+                        card={card}
+                        key={card.id + card.updatedAt}
+                        editCard={editCard}
+                    />
+                ))}
+            </div>
 
+            <span
+                style={{
+                    width: "80%",
+                    height: "2px",
+                    backgroundColor: "gray",
+                }}
+            />
+
+            <div className='card__page__cards'>
+                {recentCards.map((card) => (
+                    <CardCard
+                        card={card}
+                        key={card.id + card.updatedAt}
+                        editCard={editCard}
+                    />
+                ))}
+            </div>
             <Modal open={open} onClose={closeModal} className='modal'>
                 <div className='card__container'>
                     <CardUI
