@@ -104,7 +104,7 @@ export function CardPage() {
 
     const fetchRecentCards = async () => {
         const newRecentCards = await DataStore.query(Card, Predicates.ALL, {
-            sort: (c) => c.createdAt(SortDirection.DESCENDING),
+            sort: (c) => c.updatedAt(SortDirection.DESCENDING),
             limit: 14,
         });
         setRecentCards(newRecentCards);
