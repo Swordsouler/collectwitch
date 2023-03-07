@@ -301,7 +301,7 @@ export function CardPage() {
                 ))}
             </div>
             <Modal open={open} onClose={closeModal} className='modal'>
-                <div className='card__container'>
+                <div className='card__container' style={{ width: "100%" }}>
                     <CardUI
                         key={
                             (cardDisplay?.name ?? "") +
@@ -329,9 +329,11 @@ export function CardPage() {
                         state={cardDisplay?.state}
                         universeID={cardDisplay?.universeID}
                     />
+                    <span />
                     <div
                         className='modal__container'
                         style={{
+                            flex: 1,
                             backgroundColor: theme.palette.background.default,
                             borderRadius: theme.shape.borderRadius,
                             padding: theme.shape.borderRadius,
