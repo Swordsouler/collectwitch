@@ -1,7 +1,6 @@
 import {
     Button,
     CardActions,
-    Divider,
     FormControl,
     InputLabel,
     MenuItem,
@@ -52,6 +51,7 @@ export function CardPage() {
             | "EXCLUSIVE"
             | null
             | undefined;
+        releaseWave?: number;
     }>({});
     const [cardDisplay, setCardDisplay] = useState<{
         name?: string;
@@ -118,6 +118,7 @@ export function CardPage() {
             fetchRecentCards();
         });
         return () => subscription.unsubscribe();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
@@ -143,6 +144,7 @@ export function CardPage() {
                         updated.color2 = cardData.current.color2;
                         updated.universeID = cardData.current.universeID ?? "";
                         updated.rarity = cardData.current.rarity;
+                        updated.releaseWave = cardData.current.releaseWave ?? 0;
                     })
                 );
             } else {
@@ -165,6 +167,7 @@ export function CardPage() {
                             Date.now();
                         updated.universeID = cardData.current.universeID ?? "";
                         updated.rarity = cardData.current.rarity;
+                        updated.releaseWave = cardData.current.releaseWave ?? 0;
                     })
                 );
             }
@@ -177,7 +180,7 @@ export function CardPage() {
                     color2: cardData.current.color2,
                     universeID: cardData.current.universeID ?? "",
                     rarity: cardData.current.rarity,
-                    releaseWave: 1,
+                    releaseWave: cardData.current.releaseWave ?? 0,
                     available: true,
                 })
             );
@@ -217,6 +220,7 @@ export function CardPage() {
                 : undefined,
             universeID: card.universeID,
             rarity: card.rarity ?? undefined,
+            releaseWave: card.releaseWave ?? undefined,
         };
         setColor1(card.color1 ?? "#FFFF00");
         setColor2(card.color2 ?? "#00FFFF");
@@ -364,6 +368,7 @@ export function CardPage() {
                                     fullWidth
                                     required
                                 />
+
                                 <TextField
                                     id='card-state'
                                     label='État du personnage'
@@ -373,40 +378,6 @@ export function CardPage() {
                                     }}
                                     defaultValue={cardData.current?.state}
                                     fullWidth
-                                />
-                                <ImageInput
-                                    id='card-cover'
-                                    aspectRatio={200 / 280}
-                                    label='Ajouter une image'
-                                    onChange={(image, crop) => {
-                                        cardData.current.cover = {
-                                            image,
-                                            crop,
-                                        };
-                                    }}
-                                    src={cardData.current?.cover?.image}
-                                />
-
-                                <MuiColorInput
-                                    fullWidth
-                                    color='primary'
-                                    label='Couleur 1'
-                                    value={color1 ?? "#FFFF00"}
-                                    onChange={(color) => {
-                                        setColor1(color);
-                                        cardData.current.color1 = color;
-                                    }}
-                                />
-
-                                <MuiColorInput
-                                    fullWidth
-                                    color='primary'
-                                    label='Couleur 2'
-                                    value={color2 ?? "#00FFFF"}
-                                    onChange={(color) => {
-                                        setColor2(color);
-                                        cardData.current.color2 = color;
-                                    }}
                                 />
 
                                 <SelectUniverse
@@ -438,6 +409,54 @@ export function CardPage() {
                                                 Rarity.LEGENDARY;
                                         }
                                     }}
+                                />
+
+                                <TextField
+                                    id='release-wave'
+                                    label='Vague de lancement'
+                                    onChange={(event) => {
+                                        cardData.current.releaseWave = parseInt(
+                                            event.target.value
+                                        );
+                                    }}
+                                    type='number'
+                                    defaultValue={cardData.current?.releaseWave}
+                                    fullWidth
+                                />
+
+                                <MuiColorInput
+                                    fullWidth
+                                    color='primary'
+                                    label='Couleur 1'
+                                    value={color1 ?? "#FFFF00"}
+                                    onChange={(color) => {
+                                        setColor1(color);
+                                        cardData.current.color1 = color;
+                                    }}
+                                />
+
+                                <MuiColorInput
+                                    fullWidth
+                                    color='primary'
+                                    label='Couleur 2'
+                                    value={color2 ?? "#00FFFF"}
+                                    onChange={(color) => {
+                                        setColor2(color);
+                                        cardData.current.color2 = color;
+                                    }}
+                                />
+
+                                <ImageInput
+                                    id='card-cover'
+                                    aspectRatio={200 / 280}
+                                    label='Ajouter une image'
+                                    onChange={(image, crop) => {
+                                        cardData.current.cover = {
+                                            image,
+                                            crop,
+                                        };
+                                    }}
+                                    src={cardData.current?.cover?.image}
                                 />
                             </div>
                             <div className='form__actions'>
