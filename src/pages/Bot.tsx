@@ -1,7 +1,20 @@
+import { DataStore } from "aws-amplify";
 import React from "react";
 import { useRef } from "react";
+import { Card, Rarity } from "../models";
 
 const tmi = require("tmi.js");
+const cards: {
+    COMMON: Card[];
+    RARE: Card[];
+    EPIC: Card[];
+    LEGENDARY: Card[];
+} = {
+    COMMON: [],
+    RARE: [],
+    EPIC: [],
+    LEGENDARY: [],
+};
 
 export function Bot() {
     const twitch = useRef<any>();
@@ -24,12 +37,16 @@ export function Bot() {
             "message",
             (channel: any, tags: any, message: string, self: any) => {
                 console.log(tags);
-                //if message === "*c" then send message saying "@username Désolé, je suis pas encore prêt mon bro"
                 if (message === "*c") {
+                    const randomCard =
+                        cards.COMMON[
+                            Math.floor(Math.random() * cards.COMMON.length)
+                        ];
                     twitch.current.say(
                         channel,
-                        `@${tags.username} Désolé, je suis pas encore prêt mon bro`
+                        `@${tags.username} ${randomCard.name}`
                     );
+                    twitch.current.say("crysthallive", `${randomCard.name}`);
                 }
             }
         );
@@ -37,6 +54,27 @@ export function Bot() {
 
     React.useEffect(() => {
         connectTwitch("crysthallive");
+
+        const loadCards = async () => {
+            cards.COMMON = await DataStore.query(
+                Card,
+                (c) => c.releaseWave.eq(1) && c.rarity.eq(Rarity.COMMON)
+            );
+            cards.RARE = await DataStore.query(
+                Card,
+                (c) => c.releaseWave.eq(1) && c.rarity.eq(Rarity.RARE)
+            );
+            cards.EPIC = await DataStore.query(
+                Card,
+                (c) => c.releaseWave.eq(1) && c.rarity.eq(Rarity.EPIC)
+            );
+            cards.LEGENDARY = await DataStore.query(
+                Card,
+                (c) => c.releaseWave.eq(1) && c.rarity.eq(Rarity.LEGENDARY)
+            );
+            // write the name of the card in the chat
+        };
+        loadCards();
     }, []);
 
     return <div></div>;

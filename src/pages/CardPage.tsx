@@ -132,7 +132,7 @@ export function CardPage() {
             cardData.current.cover
                 ? getCroppedImage(croppedImage, cardData.current.cover.crop)
                 : undefined;
-
+        console.log(cardData.current);
         let card: Card;
         if (cardRef.current) {
             if (!image) {
@@ -143,7 +143,7 @@ export function CardPage() {
                         updated.color1 = cardData.current.color1;
                         updated.color2 = cardData.current.color2;
                         updated.universeID = cardData.current.universeID ?? "";
-                        updated.rarity = cardData.current.rarity;
+                        updated.rarity = cardData.current.rarity ?? "COMMON";
                         updated.releaseWave = cardData.current.releaseWave ?? 0;
                     })
                 );
@@ -166,7 +166,7 @@ export function CardPage() {
                             "?t=" +
                             Date.now();
                         updated.universeID = cardData.current.universeID ?? "";
-                        updated.rarity = cardData.current.rarity;
+                        updated.rarity = cardData.current.rarity ?? "COMMON";
                         updated.releaseWave = cardData.current.releaseWave ?? 0;
                     })
                 );
@@ -179,7 +179,7 @@ export function CardPage() {
                     color1: cardData.current.color1,
                     color2: cardData.current.color2,
                     universeID: cardData.current.universeID ?? "",
-                    rarity: cardData.current.rarity,
+                    rarity: cardData.current.rarity ?? "COMMON",
                     releaseWave: cardData.current.releaseWave ?? 0,
                     available: true,
                 })
@@ -568,7 +568,7 @@ function SelectRarity(props: {
 }) {
     const { onChange, defaultValue } = props;
     const [rarity, setRarity] = useState<string | undefined>(
-        defaultValue?.toString() ?? "COMMON"
+        defaultValue?.toString() ?? ""
     );
     const rarities = [
         {
@@ -599,11 +599,8 @@ function SelectRarity(props: {
 
     return (
         <FormControl fullWidth>
-            <InputLabel id='rarity-label' required>
-                Rareté
-            </InputLabel>
+            <InputLabel id='rarity-label'>Rareté</InputLabel>
             <Select
-                required
                 labelId='rarity-label'
                 id='rarity'
                 value={rarity}
