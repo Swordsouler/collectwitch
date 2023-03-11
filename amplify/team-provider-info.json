@@ -12,9 +12,6 @@
       "AmplifyAppId": "d17ngpd644g9y6"
     },
     "categories": {
-      "api": {
-        "collectwitch": {}
-      },
       "auth": {
         "collectwitch": {}
       },

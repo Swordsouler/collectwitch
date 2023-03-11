@@ -108,6 +108,8 @@ function Cropper(props: {
 }
 
 export function getCroppedImage(image: HTMLImageElement, crop: Crop) {
+    if (crop.width === 0 || crop.height === 0) return image.src;
+
     const canvas = document.createElement("canvas");
     const scaleX = image.naturalWidth / image.width;
     const scaleY = image.naturalHeight / image.height;
