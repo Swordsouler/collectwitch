@@ -185,9 +185,9 @@ function UniverseCard(props: {
     editUniverse: (universe: Universe) => void;
 }) {
     const { universe, editUniverse } = props;
-    const { id, name, icon } = universe;
+    const { /*id, */ name, icon } = universe;
 
-    function deleteUniverse() {
+    /*function deleteUniverse() {
         //remove icon from s3
         if (icon) {
             const key = icon
@@ -196,7 +196,7 @@ function UniverseCard(props: {
             Storage.remove(key);
         }
         DataStore.delete(Universe, id);
-    }
+    }*/
 
     return (
         <Card sx={{ width: 200 }}>
@@ -218,9 +218,6 @@ function UniverseCard(props: {
             <CardActions>
                 <Button size='small' onClick={() => editUniverse(universe)}>
                     Éditer
-                </Button>
-                <Button size='small' onClick={deleteUniverse}>
-                    Supprimer
                 </Button>
             </CardActions>
         </Card>

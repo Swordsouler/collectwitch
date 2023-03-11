@@ -1,10 +1,3 @@
-type User @model @auth(rules: [{ allow: public }]) {
-    id: ID!
-    twitchID: String!
-    prefferedCard: Card @hasOne
-    cards: [Card] @manyToMany(relationName: "UserCard")
-}
-
 type Universe @model @auth(rules: [{ allow: public }]) {
     id: ID!
     cards: [Card] @hasMany(indexName: "byUniverse", fields: ["id"])
@@ -22,8 +15,28 @@ type Card @model @auth(rules: [{ allow: public }]) {
     rarity: Rarity
     releaseWave: Int!
     available: Boolean!
-    users: [User] @manyToMany(relationName: "UserCard")
     universeID: ID! @index(name: "byUniverse")
+    cards: [UserCard] @hasMany(indexName: "byCard", fields: ["id"])
+}
+
+type UserCard @model @auth(rules: [{ allow: public }]) {
+    id: ID!
+    userID: String!
+        @index(
+            name: "userCardsByDate"
+            queryField: "userCardsByDate"
+            sortKeyFields: ["createdAt"]
+        )
+    card: Card! @belongsTo(fields: ["cardID"])
+    cardID: ID! @index(name: "byCard")
+    channelID: String!
+    createdAt: String!
+}
+
+type User @model @auth(rules: [{ allow: public }]) {
+    twitchID: String! @primaryKey
+    username: String!
+    streamer: Boolean!
 }
 
 enum Rarity {

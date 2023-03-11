@@ -6,7 +6,13 @@
 
 /* eslint-disable */
 import * as React from "react";
-import { Button, Flex, Grid, TextField } from "@aws-amplify/ui-react";
+import {
+  Button,
+  Flex,
+  Grid,
+  SwitchField,
+  TextField,
+} from "@aws-amplify/ui-react";
 import { getOverrideProps } from "@aws-amplify/ui-react/internal";
 import { User } from "../models";
 import { fetchByPath, validateField } from "./utils";
@@ -24,15 +30,23 @@ export default function UserCreateForm(props) {
   } = props;
   const initialValues = {
     twitchID: "",
+    username: "",
+    streamer: false,
   };
   const [twitchID, setTwitchID] = React.useState(initialValues.twitchID);
+  const [username, setUsername] = React.useState(initialValues.username);
+  const [streamer, setStreamer] = React.useState(initialValues.streamer);
   const [errors, setErrors] = React.useState({});
   const resetStateValues = () => {
     setTwitchID(initialValues.twitchID);
+    setUsername(initialValues.username);
+    setStreamer(initialValues.streamer);
     setErrors({});
   };
   const validations = {
     twitchID: [{ type: "Required" }],
+    username: [{ type: "Required" }],
+    streamer: [{ type: "Required" }],
   };
   const runValidationTasks = async (
     fieldName,
@@ -61,6 +75,8 @@ export default function UserCreateForm(props) {
         event.preventDefault();
         let modelFields = {
           twitchID,
+          username,
+          streamer,
         };
         const validationResponses = await Promise.all(
           Object.keys(validations).reduce((promises, fieldName) => {
@@ -116,6 +132,8 @@ export default function UserCreateForm(props) {
           if (onChange) {
             const modelFields = {
               twitchID: value,
+              username,
+              streamer,
             };
             const result = onChange(modelFields);
             value = result?.twitchID ?? value;
@@ -130,6 +148,58 @@ export default function UserCreateForm(props) {
         hasError={errors.twitchID?.hasError}
         {...getOverrideProps(overrides, "twitchID")}
       ></TextField>
+      <TextField
+        label="Username"
+        isRequired={true}
+        isReadOnly={false}
+        value={username}
+        onChange={(e) => {
+          let { value } = e.target;
+          if (onChange) {
+            const modelFields = {
+              twitchID,
+              username: value,
+              streamer,
+            };
+            const result = onChange(modelFields);
+            value = result?.username ?? value;
+          }
+          if (errors.username?.hasError) {
+            runValidationTasks("username", value);
+          }
+          setUsername(value);
+        }}
+        onBlur={() => runValidationTasks("username", username)}
+        errorMessage={errors.username?.errorMessage}
+        hasError={errors.username?.hasError}
+        {...getOverrideProps(overrides, "username")}
+      ></TextField>
+      <SwitchField
+        label="Streamer"
+        defaultChecked={false}
+        isDisabled={false}
+        isChecked={streamer}
+        onChange={(e) => {
+          let value = e.target.checked;
+          if (onChange) {
+            const modelFields = {
+              twitchID,
+              username,
+              streamer: value,
+            };
+            const result = onChange(modelFields);
+            value = result?.streamer ?? value;
+          }
+          if (errors.streamer?.hasError) {
+            runValidationTasks("streamer", value);
+          }
+          setStreamer(value);
+        }}
+        onBlur={() => runValidationTasks("streamer", streamer)}
+        errorMessage={errors.streamer?.errorMessage}
+        hasError={errors.streamer?.hasError}
+        {...getOverrideProps(overrides, "streamer")}
+      ></SwitchField>
       <Flex
         justifyContent="space-between"
         {...getOverrideProps(overrides, "CTAFlex")}

@@ -33,7 +33,18 @@ export function CardPage() {
     const [color2, setColor2] = useState<string>("#00FFFF");
     const [page, setPage] = useState<number>(0);
     const cardRef = useRef<Card | undefined>();
-    const [maxRows, setMaxRows] = useState<number>(1000);
+    const [filters, setFilters] = useState<{
+        search: string;
+        universeID: string;
+        rarity: "COMMON" | "RARE" | "EPIC" | "LEGENDARY" | "all";
+        releaseWave: number;
+    }>({
+        search: "",
+        universeID: "all",
+        rarity: "all",
+        releaseWave: 0,
+    });
+    const [maxRows, setMaxRows] = useState<number>(10000);
     const [rowsPerPage, setRowsPerPage] = useState<number>(10);
     const cardData = useRef<{
         name?: string;
@@ -71,7 +82,17 @@ export function CardPage() {
             | undefined;
     }>();
 
-    const fetchCards = async (newPage?: number, newRowsPerPage?: number) => {
+    useEffect(() => {
+        setMaxRows(10000);
+        fetchCards(0, rowsPerPage, true);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [filters]);
+
+    const fetchCards = async (
+        newPage?: number,
+        newRowsPerPage?: number,
+        filterChanged?: boolean
+    ) => {
         newPage = newPage ?? page;
         newRowsPerPage = newRowsPerPage ?? rowsPerPage;
         const oldCards = cards;
@@ -79,15 +100,42 @@ export function CardPage() {
         setRowsPerPage(newRowsPerPage);
         setCards([]);
 
-        const newCards = await DataStore.query(Card, Predicates.ALL, {
-            sort: (c) =>
-                c
-                    .universeID(SortDirection.ASCENDING)
-                    .name(SortDirection.ASCENDING)
-                    .state(SortDirection.ASCENDING),
-            limit: newRowsPerPage,
-            page: newPage,
-        });
+        const currentFilters: any[] = [];
+        if (filters.search) {
+            currentFilters.push((c: any) =>
+                c.or((c: any) => [
+                    c.name.contains(filters.search ?? ""),
+                    c.state.contains(filters.search ?? ""),
+                ])
+            );
+        }
+        if (filters.universeID !== "all") {
+            currentFilters.push((c: any) =>
+                c.universeID.eq(filters.universeID)
+            );
+        }
+        if (filters.rarity !== "all") {
+            currentFilters.push((c: any) => c.rarity.eq(filters.rarity));
+        }
+        if (filters.releaseWave > 0) {
+            currentFilters.push((c: any) =>
+                c.releaseWave.eq(filters.releaseWave)
+            );
+        }
+
+        const newCards = await DataStore.query(
+            Card,
+            (c) => c.and((c) => currentFilters.map((f) => f(c))),
+            {
+                sort: (c) =>
+                    c
+                        .universeID(SortDirection.ASCENDING)
+                        .name(SortDirection.ASCENDING)
+                        .state(SortDirection.ASCENDING),
+                limit: newRowsPerPage,
+                page: newPage,
+            }
+        );
 
         if (newCards.length > 0) {
             setCards(newCards);
@@ -96,9 +144,11 @@ export function CardPage() {
                 setMaxRows(newRowsPerPage * newPage + newCards.length);
             }
         } else {
-            setCards(oldCards);
-            setPage(oldPage);
-            setMaxRows(newRowsPerPage * oldPage + newRowsPerPage);
+            if (!filterChanged) {
+                setCards(oldCards);
+                setPage(oldPage);
+                setMaxRows(newRowsPerPage * oldPage + newRowsPerPage);
+            }
         }
     };
 
@@ -111,7 +161,6 @@ export function CardPage() {
     };
 
     useEffect(() => {
-        fetchCards(page, rowsPerPage);
         fetchRecentCards();
 
         const subscription = DataStore.observe(Card).subscribe(() => {
@@ -253,20 +302,88 @@ export function CardPage() {
 
     return (
         <div className='card__page'>
-            <TablePagination
-                component={Paper}
-                count={maxRows}
-                color='primary'
-                page={page}
-                onPageChange={(e, value) => {
-                    fetchCards(value, rowsPerPage);
-                }}
-                rowsPerPage={rowsPerPage}
-                onRowsPerPageChange={(event) => {
-                    const newRowsPerPage = parseInt(event.target.value, 10);
-                    fetchCards(0, newRowsPerPage);
-                }}
-            />
+            <div className='card__page__filters'>
+                <div className='card__page__filter'>
+                    <SelectUniverse
+                        defaultValue={filters?.universeID ?? "all"}
+                        onChange={(universeID) => {
+                            setFilters((filters) => ({
+                                ...filters,
+                                universeID,
+                            }));
+                        }}
+                        hasAll
+                    />
+                </div>
+                <div className='card__page__filter'>
+                    <SelectRarity
+                        defaultValue={filters?.rarity ?? "all"}
+                        onChange={(rarity) => {
+                            if (
+                                rarity !== "COMMON" &&
+                                rarity !== "RARE" &&
+                                rarity !== "EPIC" &&
+                                rarity !== "LEGENDARY" &&
+                                rarity !== "all"
+                            )
+                                return;
+                            setFilters((filters) => ({
+                                ...filters,
+                                rarity,
+                            }));
+                        }}
+                        hasAll
+                    />
+                </div>
+                <TablePagination
+                    component={Paper}
+                    count={maxRows}
+                    color='primary'
+                    page={page}
+                    onPageChange={(e, value) => {
+                        fetchCards(value, rowsPerPage);
+                    }}
+                    rowsPerPage={rowsPerPage}
+                    onRowsPerPageChange={(event) => {
+                        const newRowsPerPage = parseInt(event.target.value, 10);
+                        fetchCards(0, newRowsPerPage);
+                    }}
+                    labelRowsPerPage='Carte par page :'
+                    labelDisplayedRows={({ from, to, count }) =>
+                        `${from}-${to} sur ${count}`
+                    }
+                />
+                <div className='card__page__filter'>
+                    <TextField
+                        id='release-wave-filter'
+                        label='Vague de lancement'
+                        onChange={(event) => {
+                            if (isNaN(parseInt(event.target.value))) return;
+                            setFilters((filters) => ({
+                                ...filters,
+                                releaseWave: parseInt(event.target.value),
+                            }));
+                        }}
+                        type='number'
+                        defaultValue={filters?.releaseWave}
+                        fullWidth
+                    />
+                </div>
+                <div className='card__page__filter'>
+                    <TextField
+                        id='search-filter'
+                        label='Nom ou état du personnage'
+                        onChange={(event) => {
+                            setFilters((filters) => ({
+                                ...filters,
+                                search: event.target.value,
+                            }));
+                        }}
+                        defaultValue={filters?.search}
+                        fullWidth
+                    />
+                </div>
+            </div>
             <div className='card__page__cards'>
                 <MuiCard sx={{ width: 250, height: 410 }}>
                     <Button
@@ -386,6 +503,7 @@ export function CardPage() {
                                         cardData.current.universeID =
                                             universeID;
                                     }}
+                                    required
                                 />
 
                                 <SelectRarity
@@ -507,8 +625,10 @@ function CardCard(props: { card: Card; editCard: (card: Card) => void }) {
 function SelectUniverse(props: {
     onChange: (universeID: string) => void;
     defaultValue?: string;
+    required?: boolean;
+    hasAll?: boolean;
 }) {
-    const { onChange, defaultValue } = props;
+    const { onChange, defaultValue, required, hasAll } = props;
     const [universeID, setUniverseID] = useState<string>(defaultValue ?? "");
     const [universes, setUniverses] = useState<Universe[]>([]);
 
@@ -532,7 +652,7 @@ function SelectUniverse(props: {
 
     return (
         <FormControl fullWidth>
-            <InputLabel id='universe-label' required>
+            <InputLabel id='universe-label' required={required ?? false}>
                 Univers
             </InputLabel>
             <Select
@@ -542,6 +662,7 @@ function SelectUniverse(props: {
                 value={universeID}
                 label='Univers'
                 onChange={handleChange}>
+                {hasAll && <MenuItem value='all'>Tous</MenuItem>}
                 {universes.map((universe) => {
                     return (
                         <MenuItem value={universe.id} key={universe.id}>
@@ -563,10 +684,12 @@ function SelectRarity(props: {
         | "EPIC"
         | "LEGENDARY"
         | "EXCLUSIVE"
+        | "all"
         | null
         | undefined;
+    hasAll?: boolean;
 }) {
-    const { onChange, defaultValue } = props;
+    const { onChange, defaultValue, hasAll } = props;
     const [rarity, setRarity] = useState<string | undefined>(
         defaultValue?.toString() ?? ""
     );
@@ -606,6 +729,7 @@ function SelectRarity(props: {
                 value={rarity}
                 label='Rareté'
                 onChange={handleChange}>
+                {hasAll && <MenuItem value='all'>Tous</MenuItem>}
                 {rarities.map((rarity) => {
                     return (
                         <MenuItem value={rarity.id} key={rarity.id}>

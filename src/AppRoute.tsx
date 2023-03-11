@@ -1,5 +1,4 @@
 import { Routes, Route } from "react-router-dom";
-import { Bot } from "./pages/Bot";
 import { CardPage } from "./pages/CardPage";
 import { Error404 } from "./pages/Error404";
 import { Home } from "./pages/Home";
@@ -40,9 +39,5 @@ export const appRoutes: AppRouteProps[] = [
     {
         path: "/card",
         element: <CardPage />,
-    },
-    {
-        path: "/bot",
-        element: <Bot />,
     },
 ];

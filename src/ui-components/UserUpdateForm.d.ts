@@ -5,7 +5,7 @@
  **************************************************************************/
 
 import * as React from "react";
-import { GridProps, TextFieldProps } from "@aws-amplify/ui-react";
+import { GridProps, SwitchFieldProps, TextFieldProps } from "@aws-amplify/ui-react";
 import { EscapeHatchProps } from "@aws-amplify/ui-react/internal";
 import { User } from "../models";
 export declare type ValidationResponse = {
@@ -15,19 +15,25 @@ export declare type ValidationResponse = {
 export declare type ValidationFunction<T> = (value: T, validationResponse: ValidationResponse) => ValidationResponse | Promise<ValidationResponse>;
 export declare type UserUpdateFormInputValues = {
     twitchID?: string;
+    username?: string;
+    streamer?: boolean;
 };
 export declare type UserUpdateFormValidationValues = {
     twitchID?: ValidationFunction<string>;
+    username?: ValidationFunction<string>;
+    streamer?: ValidationFunction<boolean>;
 };
 export declare type PrimitiveOverrideProps<T> = Partial<T> & React.DOMAttributes<HTMLDivElement>;
 export declare type UserUpdateFormOverridesProps = {
     UserUpdateFormGrid?: PrimitiveOverrideProps<GridProps>;
     twitchID?: PrimitiveOverrideProps<TextFieldProps>;
+    username?: PrimitiveOverrideProps<TextFieldProps>;
+    streamer?: PrimitiveOverrideProps<SwitchFieldProps>;
 } & EscapeHatchProps;
 export declare type UserUpdateFormProps = React.PropsWithChildren<{
     overrides?: UserUpdateFormOverridesProps | undefined | null;
 } & {
-    id?: string;
+    twitchID?: string;
     user?: User;
     onSubmit?: (fields: UserUpdateFormInputValues) => UserUpdateFormInputValues;
     onSuccess?: (fields: UserUpdateFormInputValues) => void;

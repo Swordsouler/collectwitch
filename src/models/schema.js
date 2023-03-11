@@ -1,105 +1,5 @@
 export const schema = {
     "models": {
-        "User": {
-            "name": "User",
-            "fields": {
-                "id": {
-                    "name": "id",
-                    "isArray": false,
-                    "type": "ID",
-                    "isRequired": true,
-                    "attributes": []
-                },
-                "twitchID": {
-                    "name": "twitchID",
-                    "isArray": false,
-                    "type": "String",
-                    "isRequired": true,
-                    "attributes": []
-                },
-                "prefferedCard": {
-                    "name": "prefferedCard",
-                    "isArray": false,
-                    "type": {
-                        "model": "Card"
-                    },
-                    "isRequired": false,
-                    "attributes": [],
-                    "association": {
-                        "connectionType": "HAS_ONE",
-                        "associatedWith": [
-                            "id"
-                        ],
-                        "targetNames": [
-                            "userPrefferedCardId"
-                        ]
-                    }
-                },
-                "cards": {
-                    "name": "cards",
-                    "isArray": true,
-                    "type": {
-                        "model": "UserCard"
-                    },
-                    "isRequired": false,
-                    "attributes": [],
-                    "isArrayNullable": true,
-                    "association": {
-                        "connectionType": "HAS_MANY",
-                        "associatedWith": [
-                            "user"
-                        ]
-                    }
-                },
-                "createdAt": {
-                    "name": "createdAt",
-                    "isArray": false,
-                    "type": "AWSDateTime",
-                    "isRequired": false,
-                    "attributes": [],
-                    "isReadOnly": true
-                },
-                "updatedAt": {
-                    "name": "updatedAt",
-                    "isArray": false,
-                    "type": "AWSDateTime",
-                    "isRequired": false,
-                    "attributes": [],
-                    "isReadOnly": true
-                },
-                "userPrefferedCardId": {
-                    "name": "userPrefferedCardId",
-                    "isArray": false,
-                    "type": "ID",
-                    "isRequired": false,
-                    "attributes": []
-                }
-            },
-            "syncable": true,
-            "pluralName": "Users",
-            "attributes": [
-                {
-                    "type": "model",
-                    "properties": {}
-                },
-                {
-                    "type": "auth",
-                    "properties": {
-                        "rules": [
-                            {
-                                "allow": "public",
-                                "operations": [
-                                    "create",
-                                    "update",
-                                    "delete",
-                                    "read"
-                                ]
-                            }
-                        ]
-                    }
-                }
-            ]
-        },
         "Universe": {
             "name": "Universe",
             "fields": {
@@ -250,8 +150,15 @@ export const schema = {
                     "isRequired": true,
                     "attributes": []
                 },
-                "users": {
-                    "name": "users",
+                "universeID": {
+                    "name": "universeID",
+                    "isArray": false,
+                    "type": "ID",
+                    "isRequired": true,
+                    "attributes": []
+                },
+                "cards": {
+                    "name": "cards",
                     "isArray": true,
                     "type": {
                         "model": "UserCard"
@@ -265,13 +172,6 @@ export const schema = {
                             "card"
                         ]
                     }
-                },
-                "universeID": {
-                    "name": "universeID",
-                    "isArray": false,
-                    "type": "ID",
-                    "isRequired": true,
-                    "attributes": []
                 },
                 "createdAt": {
                     "name": "createdAt",
@@ -334,34 +234,12 @@ export const schema = {
                     "isRequired": true,
                     "attributes": []
                 },
-                "userId": {
-                    "name": "userId",
+                "userID": {
+                    "name": "userID",
                     "isArray": false,
-                    "type": "ID",
-                    "isRequired": false,
-                    "attributes": []
-                },
-                "cardId": {
-                    "name": "cardId",
-                    "isArray": false,
-                    "type": "ID",
-                    "isRequired": false,
-                    "attributes": []
-                },
-                "user": {
-                    "name": "user",
-                    "isArray": false,
-                    "type": {
-                        "model": "User"
-                    },
+                    "type": "String",
                     "isRequired": true,
-                    "attributes": [],
-                    "association": {
-                        "connectionType": "BELONGS_TO",
-                        "targetNames": [
-                            "userId"
-                        ]
-                    }
+                    "attributes": []
                 },
                 "card": {
                     "name": "card",
@@ -374,17 +252,30 @@ export const schema = {
                     "association": {
                         "connectionType": "BELONGS_TO",
                         "targetNames": [
-                            "cardId"
+                            "cardID"
                         ]
                     }
+                },
+                "cardID": {
+                    "name": "cardID",
+                    "isArray": false,
+                    "type": "ID",
+                    "isRequired": true,
+                    "attributes": []
+                },
+                "channelID": {
+                    "name": "channelID",
+                    "isArray": false,
+                    "type": "String",
+                    "isRequired": true,
+                    "attributes": []
                 },
                 "createdAt": {
                     "name": "createdAt",
                     "isArray": false,
-                    "type": "AWSDateTime",
-                    "isRequired": false,
-                    "attributes": [],
-                    "isReadOnly": true
+                    "type": "String",
+                    "isRequired": true,
+                    "attributes": []
                 },
                 "updatedAt": {
                     "name": "updatedAt",
@@ -405,9 +296,11 @@ export const schema = {
                 {
                     "type": "key",
                     "properties": {
-                        "name": "byUser",
+                        "name": "userCardsByDate",
+                        "queryField": "userCardsByDate",
                         "fields": [
-                            "userId"
+                            "userID",
+                            "createdAt"
                         ]
                     }
                 },
@@ -416,7 +309,97 @@ export const schema = {
                     "properties": {
                         "name": "byCard",
                         "fields": [
-                            "cardId"
+                            "cardID"
+                        ]
+                    }
+                },
+                {
+                    "type": "auth",
+                    "properties": {
+                        "rules": [
+                            {
+                                "allow": "public",
+                                "operations": [
+                                    "create",
+                                    "update",
+                                    "delete",
+                                    "read"
+                                ]
+                            }
+                        ]
+                    }
+                }
+            ]
+        },
+        "User": {
+            "name": "User",
+            "fields": {
+                "twitchID": {
+                    "name": "twitchID",
+                    "isArray": false,
+                    "type": "String",
+                    "isRequired": true,
+                    "attributes": []
+                },
+                "username": {
+                    "name": "username",
+                    "isArray": false,
+                    "type": "String",
+                    "isRequired": true,
+                    "attributes": []
+                },
+                "streamer": {
+                    "name": "streamer",
+                    "isArray": false,
+                    "type": "Boolean",
+                    "isRequired": true,
+                    "attributes": []
+                },
+                "createdAt": {
+                    "name": "createdAt",
+                    "isArray": false,
+                    "type": "AWSDateTime",
+                    "isRequired": false,
+                    "attributes": [],
+                    "isReadOnly": true
+                },
+                "updatedAt": {
+                    "name": "updatedAt",
+                    "isArray": false,
+                    "type": "AWSDateTime",
+                    "isRequired": false,
+                    "attributes": [],
+                    "isReadOnly": true
+                }
+            },
+            "syncable": true,
+            "pluralName": "Users",
+            "attributes": [
+                {
+                    "type": "model",
+                    "properties": {}
+                },
+                {
+                    "type": "key",
+                    "properties": {
+                        "fields": [
+                            "twitchID"
+                        ]
+                    }
+                },
+                {
+                    "type": "auth",
+                    "properties": {
+                        "rules": [
+                            {
+                                "allow": "public",
+                                "operations": [
+                                    "create",
+                                    "update",
+                                    "delete",
+                                    "read"
+                                ]
+                            }
                         ]
                     }
                 }
@@ -437,5 +420,5 @@ export const schema = {
     },
     "nonModels": {},
     "codegenVersion": "3.3.6",
-    "version": "2c44aa995db376a5c71269f46e136f1c"
+    "version": "0df1a05b041d320a1c7f421ec64dd3ea"
 };

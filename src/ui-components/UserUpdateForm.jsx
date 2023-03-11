@@ -6,14 +6,20 @@
 
 /* eslint-disable */
 import * as React from "react";
-import { Button, Flex, Grid, TextField } from "@aws-amplify/ui-react";
+import {
+  Button,
+  Flex,
+  Grid,
+  SwitchField,
+  TextField,
+} from "@aws-amplify/ui-react";
 import { getOverrideProps } from "@aws-amplify/ui-react/internal";
 import { User } from "../models";
 import { fetchByPath, validateField } from "./utils";
 import { DataStore } from "aws-amplify";
 export default function UserUpdateForm(props) {
   const {
-    id: idProp,
+    twitchID: twitchIDProp,
     user,
     onSuccess,
     onError,
@@ -25,27 +31,37 @@ export default function UserUpdateForm(props) {
   } = props;
   const initialValues = {
     twitchID: "",
+    username: "",
+    streamer: false,
   };
   const [twitchID, setTwitchID] = React.useState(initialValues.twitchID);
+  const [username, setUsername] = React.useState(initialValues.username);
+  const [streamer, setStreamer] = React.useState(initialValues.streamer);
   const [errors, setErrors] = React.useState({});
   const resetStateValues = () => {
     const cleanValues = userRecord
       ? { ...initialValues, ...userRecord }
       : initialValues;
     setTwitchID(cleanValues.twitchID);
+    setUsername(cleanValues.username);
+    setStreamer(cleanValues.streamer);
     setErrors({});
   };
   const [userRecord, setUserRecord] = React.useState(user);
   React.useEffect(() => {
     const queryData = async () => {
-      const record = idProp ? await DataStore.query(User, idProp) : user;
+      const record = twitchIDProp
+        ? await DataStore.query(User, twitchIDProp)
+        : user;
       setUserRecord(record);
     };
     queryData();
-  }, [idProp, user]);
+  }, [twitchIDProp, user]);
   React.useEffect(resetStateValues, [userRecord]);
   const validations = {
     twitchID: [{ type: "Required" }],
+    username: [{ type: "Required" }],
+    streamer: [{ type: "Required" }],
   };
   const runValidationTasks = async (
     fieldName,
@@ -74,6 +90,8 @@ export default function UserUpdateForm(props) {
         event.preventDefault();
         let modelFields = {
           twitchID,
+          username,
+          streamer,
         };
         const validationResponses = await Promise.all(
           Object.keys(validations).reduce((promises, fieldName) => {
@@ -123,13 +141,15 @@ export default function UserUpdateForm(props) {
       <TextField
         label="Twitch id"
         isRequired={true}
-        isReadOnly={false}
+        isReadOnly={true}
         value={twitchID}
         onChange={(e) => {
           let { value } = e.target;
           if (onChange) {
             const modelFields = {
               twitchID: value,
+              username,
+              streamer,
             };
             const result = onChange(modelFields);
             value = result?.twitchID ?? value;
@@ -144,6 +164,58 @@ export default function UserUpdateForm(props) {
         hasError={errors.twitchID?.hasError}
         {...getOverrideProps(overrides, "twitchID")}
       ></TextField>
+      <TextField
+        label="Username"
+        isRequired={true}
+        isReadOnly={false}
+        value={username}
+        onChange={(e) => {
+          let { value } = e.target;
+          if (onChange) {
+            const modelFields = {
+              twitchID,
+              username: value,
+              streamer,
+            };
+            const result = onChange(modelFields);
+            value = result?.username ?? value;
+          }
+          if (errors.username?.hasError) {
+            runValidationTasks("username", value);
+          }
+          setUsername(value);
+        }}
+        onBlur={() => runValidationTasks("username", username)}
+        errorMessage={errors.username?.errorMessage}
+        hasError={errors.username?.hasError}
+        {...getOverrideProps(overrides, "username")}
+      ></TextField>
+      <SwitchField
+        label="Streamer"
+        defaultChecked={false}
+        isDisabled={false}
+        isChecked={streamer}
+        onChange={(e) => {
+          let value = e.target.checked;
+          if (onChange) {
+            const modelFields = {
+              twitchID,
+              username,
+              streamer: value,
+            };
+            const result = onChange(modelFields);
+            value = result?.streamer ?? value;
+          }
+          if (errors.streamer?.hasError) {
+            runValidationTasks("streamer", value);
+          }
+          setStreamer(value);
+        }}
+        onBlur={() => runValidationTasks("streamer", streamer)}
+        errorMessage={errors.streamer?.errorMessage}
+        hasError={errors.streamer?.hasError}
+        {...getOverrideProps(overrides, "streamer")}
+      ></SwitchField>
       <Flex
         justifyContent="space-between"
         {...getOverrideProps(overrides, "CTAFlex")}
@@ -155,7 +227,7 @@ export default function UserUpdateForm(props) {
             event.preventDefault();
             resetStateValues();
           }}
-          isDisabled={!(idProp || user)}
+          isDisabled={!(twitchIDProp || user)}
           {...getOverrideProps(overrides, "ResetButton")}
         ></Button>
         <Flex
@@ -167,7 +239,7 @@ export default function UserUpdateForm(props) {
             type="submit"
             variation="primary"
             isDisabled={
-              !(idProp || user) ||
+              !(twitchIDProp || user) ||
               Object.values(errors).some((e) => e?.hasError)
             }
             {...getOverrideProps(overrides, "SubmitButton")}

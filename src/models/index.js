@@ -10,12 +10,12 @@ const Rarity = {
   "EXCLUSIVE": "EXCLUSIVE"
 };
 
-const { User, Universe, Card, UserCard } = initSchema(schema);
+const { Universe, Card, UserCard, User } = initSchema(schema);
 
 export {
-  User,
   Universe,
   Card,
   UserCard,
+  User,
   Rarity
 };

@@ -111,3 +111,21 @@
     overflow-y: auto;
     overflow-x: hidden;
 }
+
+.card__page__filters {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    width: 100%;
+    gap: 10px;
+}
+
+.card__page__filter {
+    width: 200px;
+}
+
+.card__page__filter__search {
+    width: 400px;
+}
