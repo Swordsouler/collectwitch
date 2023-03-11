@@ -400,9 +400,9 @@ export function CardPage() {
                                             cardData.current.rarity =
                                                 Rarity.RARE;
                                         }
-                                        if (rarity === "RARE") {
+                                        if (rarity === "EPIC") {
                                             cardData.current.rarity =
-                                                Rarity.RARE;
+                                                Rarity.EPIC;
                                         }
                                         if (rarity === "LEGENDARY") {
                                             cardData.current.rarity =
