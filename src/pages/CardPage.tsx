@@ -449,6 +449,7 @@ export function CardPage() {
                             },
                             imageElementId: "card-cover-cropped",
                         }}
+                        rarity={cardDisplay?.rarity}
                         state={cardDisplay?.state}
                         universeID={cardDisplay?.universeID}
                     />

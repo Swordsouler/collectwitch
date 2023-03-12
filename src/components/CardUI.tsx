@@ -16,6 +16,7 @@ export function CardUI(props: {
     color1?: string | null;
     color2?: string | null;
     universeID?: string;
+    rarity?: string | null;
 }) {
     const { name, state, color1, color2, universeID } = props;
     const [universeIcon, setUniverseIcon] = useState<string | undefined>(
@@ -99,6 +100,7 @@ export function CardUI(props: {
     url = url + "&name=" + encodeURIComponent(name ?? "Nom");
     url = url + "&state=" + encodeURIComponent(state ?? "Normal");
     url = url + "&amount=" + encodeURIComponent(amount ?? "0");
+    url = url + "&rarity=" + encodeURIComponent(props.rarity ?? "UNDEFINED");
 
     return (
         <iframe
