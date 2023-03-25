@@ -1,4 +1,17 @@
 {
+  "prod": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-collectwitch-prod-152718-authRole",
+      "UnauthRoleArn": "arn:aws:iam::217809262647:role/amplify-collectwitch-prod-152718-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::217809262647:role/amplify-collectwitch-prod-152718-authRole",
+      "Region": "eu-west-3",
+      "DeploymentBucketName": "amplify-collectwitch-prod-152718-deployment",
+      "UnauthRoleName": "amplify-collectwitch-prod-152718-unauthRole",
+      "StackName": "amplify-collectwitch-prod-152718",
+      "StackId": "arn:aws:cloudformation:eu-west-3:217809262647:stack/amplify-collectwitch-prod-152718/e2c1eae0-b9d7-11ed-b275-0a0917b27fc8",
+      "AmplifyAppId": "d17ngpd644g9y6"
+    }
+  },
   "dev": {
     "awscloudformation": {
       "AuthRoleName": "amplify-collectwitch-dev-152741-authRole",

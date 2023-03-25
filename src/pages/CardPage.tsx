@@ -609,7 +609,7 @@ function CardCard(props: { card: Card; editCard: (card: Card) => void }) {
     }
 
     return (
-        <MuiCard sx={{ width: 250 }}>
+        <MuiCard sx={{ width: 250, overflow: "visible" }}>
             <CardUI {...card} key={id + name + cover + color1 + color2} />
             <CardActions>
                 <Button size='small' onClick={() => editCard(card)}>

@@ -1,0 +1,138 @@
+.card-container {
+    perspective: 1000px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+@import url('https://fonts.googleapis.com/css2?family=Istok+Web:ital,wght@0,400;0,700;1,400;1,700&display=swap');
+.card {
+    display: flex;
+    aspect-ratio: 5/7;
+    width: 200px;
+    background-color: var(--color-primary-darker);
+    border-radius: 10px;
+    overflow: hidden;
+    
+    font-family: 'Istok Web', sans-serif;
+    transition: scale 0.3s ease-in-out;
+}
+
+.card--idle {
+    transition: transform 0.5s ease-in-out, scale 0.3s ease-in-out;
+    transform: rotateX(0deg) rotateY(0deg);
+}
+
+.card--cover {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 10px;
+}
+
+.card--universe {
+    position: absolute;
+    width: 20%;
+    aspect-ratio: 1;
+    object-fit: cover;
+    top: 0;
+    padding: 3%;
+    z-index: 50;
+}
+
+.card--bottom {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 100%;
+    padding-bottom: 1%;
+
+    display: flex;
+    flex-direction: column-reverse;
+    justify-content: center;
+    align-items: flex-end;
+    //mix-blend-mode: difference;
+    color: white;
+    z-index: 50;
+    text-align: end;
+}
+
+.card--name {
+    position: relative;
+    font-weight: bold;
+    font-size: 22px;
+    padding: 0 3%;
+}
+
+.card--state {
+    position: relative;
+    font-size: 14px;
+    font-weight: bold;
+    padding: 0 3%;
+}
+
+.card--amount-container {
+    position: absolute;
+    top: 0;
+    right: 0;
+    padding: 1%;
+    margin: 3%;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 100%;
+    z-index: 50;
+}
+
+.card--amount {
+    position: relative;
+    font-size: 15px;
+    font-weight: bold;
+    text-align: center;
+}
+
+.card--sparkling {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+
+    background-image: url("../assets/sparkle.gif"), linear-gradient(to right bottom, #ff0000, #ffffff10, #0000ff);
+    background-size: 200%;
+    background-blend-mode: overlay;
+    background-repeat: no-repeat;
+
+    z-index: 2;
+    filter: brightness(1) contrast(1);
+    mix-blend-mode: color-dodge;
+    opacity: 1;
+    animation: sparkle 10s ease-in-out infinite alternate;
+}
+
+@keyframes sparkle {
+    0% {
+        background-position: 25% 25%;
+    }
+    100% {
+        background-position: 75% 75%;
+    }
+}
+
+
+
+
+.card--gradient {
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-repeat: no-repeat;
+    background-position: 50% 50%;
+    background-size: 250% 250%;
+    filter: brightness(0.66) contrast(1.33);
+    z-index: 10;
+    opacity: 0.88;
+    mix-blend-mode: color-dodge;
+}
