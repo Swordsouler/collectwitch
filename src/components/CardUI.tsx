@@ -33,7 +33,7 @@ type Point = {
 export const CardUI = memo(
     (props: CardUIProps) => {
         const { name, state, color1, color2, universeID, rarity } = props;
-        let amount = 5;
+        let amount = 2;
 
         const [universeIcon, setUniverseIcon] = useState<string | undefined>(
             undefined
