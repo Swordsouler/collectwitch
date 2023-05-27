@@ -20,7 +20,7 @@ import { DataStore } from "aws-amplify";
 export default function UserUpdateForm(props) {
   const {
     twitchID: twitchIDProp,
-    user,
+    user: userModelProp,
     onSuccess,
     onError,
     onSubmit,
@@ -47,16 +47,16 @@ export default function UserUpdateForm(props) {
     setStreamer(cleanValues.streamer);
     setErrors({});
   };
-  const [userRecord, setUserRecord] = React.useState(user);
+  const [userRecord, setUserRecord] = React.useState(userModelProp);
   React.useEffect(() => {
     const queryData = async () => {
       const record = twitchIDProp
         ? await DataStore.query(User, twitchIDProp)
-        : user;
+        : userModelProp;
       setUserRecord(record);
     };
     queryData();
-  }, [twitchIDProp, user]);
+  }, [twitchIDProp, userModelProp]);
   React.useEffect(resetStateValues, [userRecord]);
   const validations = {
     twitchID: [{ type: "Required" }],
@@ -227,7 +227,7 @@ export default function UserUpdateForm(props) {
             event.preventDefault();
             resetStateValues();
           }}
-          isDisabled={!(twitchIDProp || user)}
+          isDisabled={!(twitchIDProp || userModelProp)}
           {...getOverrideProps(overrides, "ResetButton")}
         ></Button>
         <Flex
@@ -239,7 +239,7 @@ export default function UserUpdateForm(props) {
             type="submit"
             variation="primary"
             isDisabled={
-              !(twitchIDProp || user) ||
+              !(twitchIDProp || userModelProp) ||
               Object.values(errors).some((e) => e?.hasError)
             }
             {...getOverrideProps(overrides, "SubmitButton")}

@@ -14,7 +14,7 @@ import { DataStore } from "aws-amplify";
 export default function UniverseUpdateForm(props) {
   const {
     id: idProp,
-    universe,
+    universe: universeModelProp,
     onSuccess,
     onError,
     onSubmit,
@@ -38,16 +38,16 @@ export default function UniverseUpdateForm(props) {
     setIcon(cleanValues.icon);
     setErrors({});
   };
-  const [universeRecord, setUniverseRecord] = React.useState(universe);
+  const [universeRecord, setUniverseRecord] = React.useState(universeModelProp);
   React.useEffect(() => {
     const queryData = async () => {
       const record = idProp
         ? await DataStore.query(Universe, idProp)
-        : universe;
+        : universeModelProp;
       setUniverseRecord(record);
     };
     queryData();
-  }, [idProp, universe]);
+  }, [idProp, universeModelProp]);
   React.useEffect(resetStateValues, [universeRecord]);
   const validations = {
     name: [{ type: "Required" }],
@@ -188,7 +188,7 @@ export default function UniverseUpdateForm(props) {
             event.preventDefault();
             resetStateValues();
           }}
-          isDisabled={!(idProp || universe)}
+          isDisabled={!(idProp || universeModelProp)}
           {...getOverrideProps(overrides, "ResetButton")}
         ></Button>
         <Flex
@@ -200,7 +200,7 @@ export default function UniverseUpdateForm(props) {
             type="submit"
             variation="primary"
             isDisabled={
-              !(idProp || universe) ||
+              !(idProp || universeModelProp) ||
               Object.values(errors).some((e) => e?.hasError)
             }
             {...getOverrideProps(overrides, "SubmitButton")}
